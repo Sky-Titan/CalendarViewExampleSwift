@@ -7,11 +7,24 @@
 
 import UIKit
 
+class CanlendarCellView: UICollectionViewCell {
+    
+}
+
+class CalendarCellViewModel {
+    
+}
+
 class CalendarView: UIView {
     
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var innerView: UIView!
     @IBOutlet weak var backgroundButton: UIButton!
+    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var headerView: UIView!
+    @IBOutlet weak var monthLabel: UILabel!
+    @IBOutlet weak var rightButton: UIButton!
+    @IBOutlet weak var leftButton: UIButton!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
