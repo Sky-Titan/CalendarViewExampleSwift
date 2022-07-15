@@ -7,12 +7,20 @@
 
 import UIKit
 
-class CanlendarCellView: UICollectionViewCell {
+class CalendarCellBaseView: UICollectionViewCell {
     
-}
-
-class CalendarCellViewModel {
+    private weak var cellView: CalendarCellView?
     
+    func setViewModel(_ viewModel: CalendarCellViewModel) {
+        if let cellView = cellView {
+            cellView.setViewModel(viewModel: viewModel)
+        } else {
+            let cellView = CalendarCellView()
+            contentView.addSubview(cellView)
+            cellView.bindToSuperView()
+            cellView.setViewModel(viewModel: ViewController)
+        }
+    }
 }
 
 class CalendarView: UIView {
@@ -47,14 +55,7 @@ class CalendarView: UIView {
     private func loadNib() {
         Bundle(for: CalendarView.self).loadNibNamed("CalendarView", owner: self)
         self.addSubview(contentView)
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-            
-        NSLayoutConstraint.activate([
-            self.topAnchor.constraint(equalTo: contentView.topAnchor),
-            self.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            self.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            self.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
+        contentView.bindToSuperView()
     }
     
     @IBAction func backgroundClicked(_ sender: Any) {
