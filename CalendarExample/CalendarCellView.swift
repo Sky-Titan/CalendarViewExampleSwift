@@ -10,12 +10,13 @@ import UIKit
 class CalendarCellView: UIView {
     
     @IBOutlet weak var contentView: UIView!
-    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var dateButton: UIButton!
     
     private var viewModel: CalendarCellViewModel?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        loadNib()
     }
     
     required init?(coder: NSCoder) {
@@ -30,19 +31,28 @@ class CalendarCellView: UIView {
     
     func setViewModel(viewModel: CalendarCellViewModel) {
         self.viewModel = viewModel
-        self.dateLabel.text = viewModel.dateString
+        self.dateButton.setTitle(viewModel.dateString, for: .normal)
         
+    }
+    @IBAction func buttonClicked(_ sender: Any) {
     }
 }
 
 class CalendarCellViewModel {
     
-    var dateString: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd"
-        return dateFormatter.string(from: date)
+    var isToday: Bool {
+        Calendar.current.isDateInToday(date)
     }
+    var isSameMonth: Bool {
+        Calendar.current.component(.month, from: todayDate) == Calendar.current.component(.month, from: date)
+    }
+    
+    var dateString: String {
+        return Calendar.current.component(.day, from: date).description
+    }
+    
     let date: Date
+    let todayDate: Date = Date()
     
     init(date: Date) {
         self.date = date

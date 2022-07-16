@@ -9,7 +9,7 @@ import UIKit
 
 class CalendarCellBaseView: UICollectionViewCell {
     
-    private weak var cellView: CalendarCellView?
+    private var cellView: CalendarCellView?
     
     func setViewModel(_ viewModel: CalendarCellViewModel) {
         if let cellView = cellView {
@@ -18,8 +18,18 @@ class CalendarCellBaseView: UICollectionViewCell {
             let cellView = CalendarCellView()
             contentView.addSubview(cellView)
             cellView.bindToSuperView()
-            cellView.setViewModel(viewModel: ViewController)
+            cellView.setViewModel(viewModel: viewModel)
         }
+    }
+}
+
+class CalendarSection {
+    
+    var cellViewModels: [CalendarCellViewModel] = []
+    let date: Date
+    
+    init(date: Date) {
+        self.date = date
     }
 }
 
@@ -34,6 +44,9 @@ class CalendarView: UIView {
     @IBOutlet weak var rightButton: UIButton!
     @IBOutlet weak var leftButton: UIButton!
     
+    private var sections: [CalendarSection] = []
+    private var cellClickBlock: ((Date) -> Void)?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         initialize()
@@ -44,12 +57,33 @@ class CalendarView: UIView {
         initialize()
     }
     
-    func initialize() {
+    private func initialize() {
         loadNib()
         
-        innerView.layer.cornerRadius = 4
+        innerView.layer.cornerRadius = 8
         self.isHidden = true
         self.alpha = 0
+        
+        let date = Date()
+        let currentDay = Calendar.current.component(.day, from: date)
+        monthLabel.text = Calendar.current.component(.month, from: date).description
+        
+        let firstDayDate = Calendar.current.date(byAdding: .day, value: 1 - currentDay, to: date)!
+        
+        let indexOfFirstDay = Calendar.current.component(.weekday, from: firstDayDate) - 1
+        
+        let section = CalendarSection(date: date)
+        
+        for index in 0 ..< 42 {
+            let subtract = index - indexOfFirstDay
+            let cellDate = Calendar.current.date(byAdding: .day, value: subtract, to: firstDayDate)!
+            section.cellViewModels.append(CalendarCellViewModel(date: cellDate))
+        }
+        sections.append(section)
+        collectionView.register(CalendarCellBaseView.self, forCellWithReuseIdentifier: "CalendarCellBaseView")
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.reloadData()
     }
     
     private func loadNib() {
@@ -76,4 +110,36 @@ class CalendarView: UIView {
             self?.removeFromSuperview()
         })
     }
+}
+extension CalendarView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let height: CGFloat = 250 / 6
+        let width: CGFloat = (UIScreen.main.bounds.width - 100) / 7
+        return CGSize(width: width, height: height)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        guard sections.count > section else { return 0 }
+        return sections[section].cellViewModels.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let viewModel = sections[indexPath.section].cellViewModels[indexPath.row]
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CalendarCellBaseView", for: indexPath) as? CalendarCellBaseView else {
+            let cell = CalendarCellBaseView()
+            cell.setViewModel(viewModel)
+            return cell
+        }
+        
+        cell.setViewModel(viewModel)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let viewModel = sections[indexPath.section].cellViewModels[indexPath.row]
+        cellClickBlock?(viewModel.date)
+    }
+    
 }
