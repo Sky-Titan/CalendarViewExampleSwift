@@ -10,7 +10,8 @@ import UIKit
 class CalendarCellView: UIView {
     
     @IBOutlet weak var contentView: UIView!
-    @IBOutlet weak var dateButton: UIButton!
+    @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var dimView: UIView!
     
     private var viewModel: CalendarCellViewModel?
     
@@ -31,10 +32,19 @@ class CalendarCellView: UIView {
     
     func setViewModel(viewModel: CalendarCellViewModel) {
         self.viewModel = viewModel
-        self.dateButton.setTitle(viewModel.dateString, for: .normal)
+        self.label.text = viewModel.dateString
         
-    }
-    @IBAction func buttonClicked(_ sender: Any) {
+        dimView.isHidden = viewModel.isSameMonth
+        
+        if viewModel.isToday {
+            label.textColor = .green
+        } else if viewModel.isSunday {
+            label.textColor = .red
+        } else if viewModel.isSaturDay {
+            label.textColor = .blue
+        } else {
+            label.textColor = .label
+        }
     }
 }
 
@@ -45,6 +55,13 @@ class CalendarCellViewModel {
     }
     var isSameMonth: Bool {
         Calendar.current.component(.month, from: todayDate) == Calendar.current.component(.month, from: date)
+    }
+    
+    var isSunday: Bool {
+        Calendar.current.component(.weekday, from: date) == 1
+    }
+    var isSaturDay: Bool {
+        Calendar.current.component(.weekday, from: date) == 7
     }
     
     var dateString: String {

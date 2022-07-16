@@ -12,7 +12,8 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CalendarCellView" customModule="CalendarExample" customModuleProvider="target">
             <connections>
                 <outlet property="contentView" destination="iN0-l3-epB" id="7uJ-wR-DJA"/>
-                <outlet property="dateButton" destination="4Wb-GO-XGK" id="n28-vp-8MY"/>
+                <outlet property="dimView" destination="yfn-fU-N9u" id="z6u-UK-bLs"/>
+                <outlet property="label" destination="fKV-mB-hAB" id="kcz-Tx-AaL"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -27,27 +28,30 @@
                         <constraint firstAttribute="height" constant="1" id="UiU-cH-oUD"/>
                     </constraints>
                 </view>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Wb-GO-XGK">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fKV-mB-hAB">
                     <rect key="frame" x="0.0" y="0.0" width="50" height="49"/>
                     <fontDescription key="fontDescription" type="system" pointSize="11"/>
-                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" title="Button">
-                        <color key="titleColor" systemColor="labelColor"/>
-                    </state>
-                    <connections>
-                        <action selector="buttonClicked:" destination="-1" eventType="touchUpInside" id="dNv-Ps-4wi"/>
-                    </connections>
-                </button>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view alpha="0.40000000000000002" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yfn-fU-N9u" userLabel="dimView">
+                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                    <color key="backgroundColor" systemColor="systemGray5Color"/>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="yfn-fU-N9u" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="1x9-IJ-gAF"/>
+                <constraint firstAttribute="top" secondItem="yfn-fU-N9u" secondAttribute="top" id="8NL-6J-n9F"/>
                 <constraint firstAttribute="trailing" secondItem="6hu-uC-PTu" secondAttribute="trailing" constant="5" id="AWY-wh-dtI"/>
-                <constraint firstAttribute="trailing" secondItem="4Wb-GO-XGK" secondAttribute="trailing" id="CJx-g9-nWG"/>
-                <constraint firstItem="6hu-uC-PTu" firstAttribute="top" secondItem="4Wb-GO-XGK" secondAttribute="bottom" id="GBK-bJ-AwB"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="leading" secondItem="yfn-fU-N9u" secondAttribute="leading" id="F1b-NV-I2G"/>
+                <constraint firstItem="fKV-mB-hAB" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="LJD-GI-GLp"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="6hu-uC-PTu" secondAttribute="bottom" id="TAe-ua-LeD"/>
-                <constraint firstItem="4Wb-GO-XGK" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="ae8-8f-QMh"/>
-                <constraint firstItem="4Wb-GO-XGK" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="f91-vB-m49"/>
+                <constraint firstAttribute="trailing" secondItem="fKV-mB-hAB" secondAttribute="trailing" id="XbY-Ik-rN6"/>
+                <constraint firstItem="6hu-uC-PTu" firstAttribute="top" secondItem="fKV-mB-hAB" secondAttribute="bottom" id="dBm-z0-I21"/>
+                <constraint firstItem="yfn-fU-N9u" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="nNM-jZ-hBN"/>
+                <constraint firstItem="fKV-mB-hAB" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="xds-QP-qfo"/>
                 <constraint firstItem="6hu-uC-PTu" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="5" id="zT3-fh-vn7"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -55,9 +59,6 @@
         </view>
     </objects>
     <resources>
-        <systemColor name="labelColor">
-            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

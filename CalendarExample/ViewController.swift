@@ -19,6 +19,9 @@ class ViewController: UIViewController {
         let calendarView = CalendarView(frame: self.view.bounds)
         self.view.addSubview(calendarView)
         calendarView.connectToSuperView()
+        calendarView.cellClickBlock = { date in
+            print(date)
+        }
         calendarView.show()
         
     }

@@ -30,6 +30,17 @@ class CalendarSection {
     
     init(date: Date) {
         self.date = date
+        
+        let currentDay = Calendar.current.component(.day, from: date)
+        let firstDayDate = Calendar.current.date(byAdding: .day, value: 1 - currentDay, to: date)!
+        
+        let indexOfFirstDay = Calendar.current.component(.weekday, from: firstDayDate) - 1
+        
+        for index in 0 ..< 42 {
+            let subtract = index - indexOfFirstDay
+            let cellDate = Calendar.current.date(byAdding: .day, value: subtract, to: firstDayDate)!
+            cellViewModels.append(CalendarCellViewModel(date: cellDate))
+        }
     }
 }
 
@@ -45,7 +56,7 @@ class CalendarView: UIView {
     @IBOutlet weak var leftButton: UIButton!
     
     private var sections: [CalendarSection] = []
-    private var cellClickBlock: ((Date) -> Void)?
+    var cellClickBlock: ((Date) -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -63,27 +74,18 @@ class CalendarView: UIView {
         innerView.layer.cornerRadius = 8
         self.isHidden = true
         self.alpha = 0
+        monthLabel.text = Calendar.current.monthSymbols[Calendar.current.component(.month, from: Date()) - 1]
         
-        let date = Date()
-        let currentDay = Calendar.current.component(.day, from: date)
-        monthLabel.text = Calendar.current.component(.month, from: date).description
-        
-        let firstDayDate = Calendar.current.date(byAdding: .day, value: 1 - currentDay, to: date)!
-        
-        let indexOfFirstDay = Calendar.current.component(.weekday, from: firstDayDate) - 1
-        
-        let section = CalendarSection(date: date)
-        
-        for index in 0 ..< 42 {
-            let subtract = index - indexOfFirstDay
-            let cellDate = Calendar.current.date(byAdding: .day, value: subtract, to: firstDayDate)!
-            section.cellViewModels.append(CalendarCellViewModel(date: cellDate))
-        }
-        sections.append(section)
+        makeSection()
         collectionView.register(CalendarCellBaseView.self, forCellWithReuseIdentifier: "CalendarCellBaseView")
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.reloadData()
+    }
+    
+    private func makeSection() {
+        let section = CalendarSection(date: Date())
+        sections.append(section)
     }
     
     private func loadNib() {
