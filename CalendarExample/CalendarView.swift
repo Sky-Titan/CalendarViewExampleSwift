@@ -7,22 +7,6 @@
 
 import UIKit
 
-class CalendarCellBaseView: UICollectionViewCell {
-    
-    private var cellView: CalendarCellView?
-    
-    func setViewModel(_ viewModel: CalendarCellViewModel) {
-        if let cellView = cellView {
-            cellView.setViewModel(viewModel: viewModel)
-        } else {
-            let cellView = CalendarCellView()
-            contentView.addSubview(cellView)
-            cellView.bindToSuperView()
-            cellView.setViewModel(viewModel: viewModel)
-        }
-    }
-}
-
 class CalendarSection {
     
     var cellViewModels: [CalendarCellViewModel] = []
@@ -33,13 +17,16 @@ class CalendarSection {
         
         let currentDay = Calendar.current.component(.day, from: date)
         let firstDayDate = Calendar.current.date(byAdding: .day, value: 1 - currentDay, to: date)!
-        
+        let nextMonthDate = Calendar.current.date(byAdding: .month, value: 1, to: firstDayDate)!
+        let lastDayDate = Calendar.current.date(byAdding: .day, value: -1, to: nextMonthDate)!
+        let row = Calendar.current.component(.weekOfMonth, from: lastDayDate)
         let indexOfFirstDay = Calendar.current.component(.weekday, from: firstDayDate) - 1
         
-        for index in 0 ..< 42 {
+        for index in 0 ..< 7 * row {
             let subtract = index - indexOfFirstDay
+            
             let cellDate = Calendar.current.date(byAdding: .day, value: subtract, to: firstDayDate)!
-            cellViewModels.append(CalendarCellViewModel(date: cellDate))
+            cellViewModels.append(CalendarCellViewModel(date: cellDate, currentDate: date))
         }
     }
 }
@@ -57,6 +44,11 @@ class CalendarView: UIView {
     
     private var sections: [CalendarSection] = []
     var cellClickBlock: ((Date) -> Void)?
+    private(set) var date = Date()
+    
+    deinit {
+        print("==== deinit =====")
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -74,17 +66,23 @@ class CalendarView: UIView {
         innerView.layer.cornerRadius = 8
         self.isHidden = true
         self.alpha = 0
-        monthLabel.text = Calendar.current.monthSymbols[Calendar.current.component(.month, from: Date()) - 1]
         
-        makeSection()
         collectionView.register(CalendarCellBaseView.self, forCellWithReuseIdentifier: "CalendarCellBaseView")
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        resetView(date: date)
+    }
+    
+    private func resetView(date: Date) {
+        sections = []
+        monthLabel.text = Calendar.current.monthSymbols[Calendar.current.component(.month, from: date) - 1]
+        makeSection(date: date)
         collectionView.reloadData()
     }
     
-    private func makeSection() {
-        let section = CalendarSection(date: Date())
+    private func makeSection(date: Date) {
+        let section = CalendarSection(date: date)
         sections.append(section)
     }
     
@@ -112,12 +110,35 @@ class CalendarView: UIView {
             self?.removeFromSuperview()
         })
     }
+    
+    @IBAction func leftButtonClicked(_ sender: Any) {
+        moveFormerMonth()
+    }
+    
+    @IBAction func rightButtonClicked(_ sender: Any) {
+        moveNextMonth()
+    }
+    
+    private func moveFormerMonth() {
+        if let date = Calendar.current.date(byAdding: .month, value: -1, to: date) {
+            self.date = date
+            resetView(date: date)
+        }
+    }
+    
+    private func moveNextMonth() {
+        if let date = Calendar.current.date(byAdding: .month, value: 1, to: date) {
+            self.date = date
+            resetView(date: date)
+        }
+    }
 }
 extension CalendarView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let height: CGFloat = 250 / 6
+        let row = sections[indexPath.section].cellViewModels.count / 7
+        let height: CGFloat = CGFloat(250) / CGFloat(row)
         let width: CGFloat = (UIScreen.main.bounds.width - 100) / 7
         return CGSize(width: width, height: height)
     }

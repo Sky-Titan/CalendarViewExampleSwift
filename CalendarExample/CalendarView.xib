@@ -54,12 +54,18 @@
                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                     <state key="normal" image="arrow.right.circle" catalog="system"/>
+                                    <connections>
+                                        <action selector="rightButtonClicked:" destination="-1" eventType="touchUpInside" id="QCN-LS-ZWh"/>
+                                    </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="blL-cR-WrK" userLabel="leftButton">
                                     <rect key="frame" x="20" y="14" width="20" height="22"/>
                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                     <state key="normal" image="arrow.left.circle" catalog="system"/>
+                                    <connections>
+                                        <action selector="leftButtonClicked:" destination="-1" eventType="touchUpInside" id="gVK-3m-uUs"/>
+                                    </connections>
                                 </button>
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>

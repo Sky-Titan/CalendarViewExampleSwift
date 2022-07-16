@@ -7,6 +7,22 @@
 
 import UIKit
 
+class CalendarCellBaseView: UICollectionViewCell {
+    
+    private var cellView: CalendarCellView?
+    
+    func setViewModel(_ viewModel: CalendarCellViewModel) {
+        if let cellView = cellView {
+            cellView.setViewModel(viewModel: viewModel)
+        } else {
+            let cellView = CalendarCellView()
+            contentView.addSubview(cellView)
+            cellView.bindToSuperView()
+            cellView.setViewModel(viewModel: viewModel)
+        }
+    }
+}
+
 class CalendarCellView: UIView {
     
     @IBOutlet weak var contentView: UIView!
@@ -54,7 +70,7 @@ class CalendarCellViewModel {
         Calendar.current.isDateInToday(date)
     }
     var isSameMonth: Bool {
-        Calendar.current.component(.month, from: todayDate) == Calendar.current.component(.month, from: date)
+        Calendar.current.component(.month, from: currentDate) == Calendar.current.component(.month, from: date)
     }
     
     var isSunday: Bool {
@@ -69,9 +85,10 @@ class CalendarCellViewModel {
     }
     
     let date: Date
-    let todayDate: Date = Date()
+    let currentDate: Date
     
-    init(date: Date) {
+    init(date: Date, currentDate: Date) {
         self.date = date
+        self.currentDate = currentDate
     }
 }
