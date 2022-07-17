@@ -76,7 +76,7 @@ class CalendarView: UIView {
     
     private func resetView(date: Date) {
         sections = []
-        monthLabel.text = Calendar.current.monthSymbols[Calendar.current.component(.month, from: date) - 1]
+        monthLabel.text = "\(Calendar.current.component(.year, from: date))년 \(Calendar.current.component(.month, from: date))월"
         makeSection(date: date)
         collectionView.reloadData()
     }
